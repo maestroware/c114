@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.0.0/p5.js"></script>
+    <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>>
+    <title>C114</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <style>
+        *{
+            font-family: 'Times New Roman', Times, serif;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <h1>C114</h1>
+        <button class="btn-success btn" onclick="save()">Save Image</button>
+    </center>
+</body>
+<script>
+    musX = 0;
+    musY = 0;
+    function preload() {
+        moustacher = loadImage("https://i.postimg.cc/VsxPzsqS/download-removebg-preview.png")
+    }
+    
+    function setup() {
+        canvas = createCanvas(300, 300)
+        canvas.center()
+        video = createCapture(VIDEO)
+        video.size(300, 300)
+        video.hide()
+        poseNet = ml5.poseNet(video, modelLoaded)
+        poseNet.on('pose', gotPoses)
+    }
+    function draw() {
+        image(video, 0,0,300,300)
+        image(moustacher, musX, musY, 30, 30)
+    }
+    
+    function ts() {
+        save('filteredimage.png')
+    }
+    
+    function modelLoaded() {
+        console.log("Posenet Loaded")
+    }
+    function gotPoses(result) {
+        if (result.length>0) {
+            console.log(result)
+            musX = result[0].pose.nose.x -10
+            musY = result[0].pose.nose.y
+        }
+    }
+</script>
+</html>
